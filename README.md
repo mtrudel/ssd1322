@@ -1,5 +1,9 @@
 # SSD1322
 
+[![Build Status](https://travis-ci.org/mtrudel/ssd1322.svg?branch=master)](https://travis-ci.org/mtrudel/ssd1322)
+[![Inline docs](http://inch-ci.org/github/mtrudel/ssd1322.svg?branch=master&style=flat)](http://inch-ci.org/github/mtrudel/ssd1322)
+[![Hex.pm](https://img.shields.io/hexpm/v/ssd1322.svg?style=flat-square)](https://hex.pm/packages/ssd1322)
+
 This package provides an interface for controlling OLED displays using the common 
 [SSD1322](https://www.newhavendisplay.com/app_notes/SSD1322.pdf) chipset, as 
 available [here](https://www.aliexpress.com/item/32988174566.html) (or many other vendors).
