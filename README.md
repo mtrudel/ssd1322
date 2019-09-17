@@ -25,30 +25,29 @@ Common usage looks like so:
 
 ```
 # Initialize your connection
-{:ok, session} = SSD1322.connect()
+{:ok, pid} = SSD1322.start_link()
 
 # You can also override a bunch of options if needed:
-{:ok, conn} = SSD1322.SPIConnection.init(spi_dev: "spidev0.0", dc_pin: 24, reset_pin: 25)
-{:ok, session} = SSD1322.connect(conn: conn, width: 256, height: 64)
+{:ok, pid} = SSD1322.start_link(spi_connection_opts: [spi_dev: "spidev0.0", dc_pin: 24, reset_pin: 25], width: 256, height: 64)
 
 # Display the image defined by data. data is a binary containing row-wise 
 # 4-bit greyscale pixel data in linear order. It follows that there data is
 # W x H / 2 bytes long. Check out github.com/mtrudel/ex_paint for a library that
 # can produce this format with little effort
-SSD1322.draw(session, data)
+SSD1322.draw(pid, data)
 
 # You can also turn the display on and off
-display_on(session)
-display_off(session)
+display_on(pid)
+display_off(pid)
 
 # Set the contrast to a value between 0 and 255
-contrast(session, contrast)
+contrast(pid, contrast)
 
 # Clear the display to a given grey (black by default)
-clear(session, grey \\ 0x00)
+clear(pid, grey \\ 0x00)
 
 # Or reset the connection if something goes wrong
-reset(session)
+reset(pid)
 ```
 
 Note that although this library serializes access for callers sharing a single connection instance, 

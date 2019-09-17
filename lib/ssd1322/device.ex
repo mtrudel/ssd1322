@@ -16,8 +16,10 @@ defmodule SSD1322.Device do
   alias SSD1322.SPIConnection
 
   def init(opts \\ []) do
+    spi_connection_opts = opts |> Keyword.get(:spi_connection_opts, [])
+
     session = %__MODULE__{
-      conn: Keyword.get(opts, :conn, SPIConnection.init()),
+      conn: Keyword.get(opts, :conn, SPIConnection.init(spi_connection_opts)),
       width: Keyword.get(opts, :width, 256),
       height: Keyword.get(opts, :height, 64)
     }

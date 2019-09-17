@@ -5,7 +5,7 @@ defmodule SSD1322 do
 
   use GenServer
 
-  def connect(args \\ []) do
+  def start_link(args \\ []) do
     GenServer.start_link(__MODULE__, args)
   end
 
