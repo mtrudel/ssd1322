@@ -28,7 +28,7 @@ Common usage looks like so:
 {:ok, pid} = SSD1322.start_link()
 
 # You can also override a bunch of options if needed:
-{:ok, pid} = SSD1322.start_link(spi_connection_opts: [spi_dev: "spidev0.0", dc_pin: 24, reset_pin: 25], width: 256, height: 64)
+{:ok, pid} = SSD1322.start_link(spi_connection_opts: [spi_dev: "spidev0.0", dc_pin: 24, reset_pin: 25], width: 256, height: 64, name: "my_display")
 
 # Display the image defined by data. data is a binary containing row-wise 
 # 4-bit greyscale pixel data in linear order. It follows that there data is

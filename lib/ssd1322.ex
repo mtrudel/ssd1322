@@ -6,7 +6,8 @@ defmodule SSD1322 do
   use GenServer
 
   def start_link(args \\ []) do
-    GenServer.start_link(__MODULE__, args)
+    name = args |> Keyword.get(:name)
+    GenServer.start_link(__MODULE__, args, name: name)
   end
 
   def reset(pid) do
