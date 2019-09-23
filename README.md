@@ -37,17 +37,17 @@ Common usage looks like so:
 SSD1322.draw(pid, data)
 
 # You can also turn the display on and off
-display_on(pid)
-display_off(pid)
+SSD1322.display_on(pid)
+SSD1322.display_off(pid)
 
 # Set the contrast to a value between 0 and 255
-contrast(pid, contrast)
+SSD1322.contrast(pid, contrast)
 
 # Clear the display to a given grey (black by default)
-clear(pid, grey \\ 0x00)
+SSD1322.clear(pid, grey \\ 0x00)
 
 # Or reset the connection if something goes wrong
-reset(pid)
+SSD1322.reset(pid)
 ```
 
 Note that although this library serializes access for callers sharing a single connection instance, 

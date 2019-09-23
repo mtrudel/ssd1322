@@ -11,7 +11,7 @@ defmodule SSD1322.Device do
 
   defstruct conn: nil, width: 0, height: 0
 
-  @gdram_row_width 120
+  @gdram_row_width 480
 
   alias SSD1322.SPIConnection
 
@@ -66,17 +66,28 @@ defmodule SSD1322.Device do
   end
 
   def clear(%__MODULE__{width: width, height: height} = device, grey \\ 0) do
-    draw(device, :binary.copy(<<grey::4, grey::4>>, div(width * height, 2)))
+    draw(device, :binary.copy(<<grey::4, grey::4>>, div(width * height, 2)), {0, 0}, {width, height})
   end
 
-  def draw(%__MODULE__{conn: conn, width: width, height: height}, binary) do
-    # GDRAM writes word-wise (16 bits at a time), and each pixel is 4 bits, so the width in RAM is width/4.
-    # We write our pixels inthe the middle of each GDRAM row
-    width_to_write = div(width, 4)
-    offset = div(@gdram_row_width - width_to_write, 2)
+  # This function does not perform any clipping or validation on the given binary other than to  other than to 
+  # validate that its x offset and width are both multiples of 4
+  def draw(%__MODULE__{conn: conn, width: display_width}, binary, {x, y}, {width, height}) do
+    if rem(x, 4) != 0, do: raise("Cannot draw when x is not divisible by 4 (x=#{x})")
+    if rem(width, 4) != 0, do: raise("Cannot draw when width is not divisible by 4 (width=#{width})")
 
-    SPIConnection.command(conn, <<0x15>>, <<offset, offset + width_to_write - 1>>)
-    SPIConnection.command(conn, <<0x75>>, <<0, height - 1>>)
+    # Memory row widths don't know anything about the actual number of pixels on the device. The SSD1322 chip
+    # supports displays up to 480 pixels wide, and if a display is narrower than that its pixels are centered in the
+    # memory row. As a consequence, pixel column 0 on the display is actually (480 - display_width) / 2 bytes into the 
+    # row.
+    display_zero = div(@gdram_row_width - display_width, 2)
+    offset = display_zero + x
+
+    # GDRAM addresses 16 bit words, and each pixel is 4 bits, so offsets / widths need to divide by 4 
+    offset_to_write = div(offset, 4)
+    width_to_write = div(width, 4)
+
+    SPIConnection.command(conn, <<0x15>>, <<offset_to_write, offset_to_write + width_to_write - 1>>)
+    SPIConnection.command(conn, <<0x75>>, <<y, y + height - 1>>)
     SPIConnection.command(conn, <<0x5C>>, binary)
   end
 end

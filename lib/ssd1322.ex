@@ -34,6 +34,10 @@ defmodule SSD1322 do
     GenServer.call(pid, {:draw, bitmap})
   end
 
+  def draw(pid, bitmap, {x, y}, {w, h}) do
+    GenServer.call(pid, {:draw, bitmap, {x, y}, {w, h}})
+  end
+
   def init(args) do
     {:ok, SSD1322.Device.init(args)}
   end
@@ -58,7 +62,11 @@ defmodule SSD1322 do
     {:reply, SSD1322.Device.clear(device, grey), device}
   end
 
-  def handle_call({:draw, bitmap}, _from, device) do
-    {:reply, SSD1322.Device.draw(device, bitmap), device}
+  def handle_call({:draw, bitmap}, from, device) do
+    handle_call({:draw, bitmap, {0, 0}, {device.width, device.height}}, from, device)
+  end
+
+  def handle_call({:draw, bitmap, {x, y}, {width, height}}, _from, device) do
+    {:reply, SSD1322.Device.draw(device, bitmap, {x, y}, {width, height}), device}
   end
 end
